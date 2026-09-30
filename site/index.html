@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gastos na nuvem</title>
+  <meta name="description" content="Custos diários de Google Cloud, Cloudflare R2 e Magalu Cloud, por uso.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect x='1' y='8' width='3' height='7' rx='1' fill='%232a78d6'/%3E%3Crect x='6.5' y='4' width='3' height='11' rx='1' fill='%23eb6834'/%3E%3Crect x='12' y='1' width='3' height='14' rx='1' fill='%231baf7a'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header class="top">
+      <div>
+        <h1>Gastos na nuvem</h1>
+        <p class="sub" id="sub">carregando…</p>
+      </div>
+    </header>
+
+    <div id="warnings" class="warnings" hidden></div>
+
+    <nav class="filters" aria-label="Filtros">
+      <div class="seg" role="radiogroup" aria-label="Período" id="f-period">
+        <button data-v="7d">7 dias</button>
+        <button data-v="30d">30 dias</button>
+        <button data-v="90d">90 dias</button>
+        <button data-v="mtd">Mês atual</button>
+        <button data-v="lm">Mês passado</button>
+        <button data-v="all">Tudo</button>
+      </div>
+      <label class="sel"><span>Escopo</span><select id="f-scope"></select></label>
+      <label class="sel"><span>Uso</span><select id="f-usecase"></select></label>
+      <div class="seg" role="radiogroup" aria-label="Moeda" id="f-cur">
+        <button data-v="BRL">R$</button>
+        <button data-v="USD">US$</button>
+      </div>
+    </nav>
+
+    <section class="kpis" id="kpis" aria-live="polite"></section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Por dia</h2>
+        <ul class="legend" id="legend-daily"></ul>
+      </div>
+      <div class="chart" id="chart-daily"></div>
+      <details class="tableview">
+        <summary>Ver como tabela</summary>
+        <div class="scroll"><table id="table-daily"></table></div>
+      </details>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Por uso</h2>
+        <p class="hint">clique num uso para filtrar</p>
+      </div>
+      <div id="chart-usecase" class="hbars"></div>
+    </section>
+
+    <div class="grid2">
+      <section class="card">
+        <div class="card-head"><h2>Por mês</h2></div>
+        <div class="scroll"><table id="table-month"></table></div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Recursos</h2><p class="hint">no período</p></div>
+        <div class="scroll"><table id="table-res"></table></div>
+        <button class="more" id="res-more" hidden>mostrar todos</button>
+      </section>
+    </div>
+
+    <footer class="notes">
+      <p><b>Como é calculado.</b>
+        <b>Google Cloud</b>: custo líquido (custo + créditos, inclusive free tier) do billing export no BigQuery, conta de faturamento inteira.
+        <b>Cloudflare R2</b>: estimado a partir das métricas de uso (armazenamento, operações classe A/B) × preço de lista, descontando o free tier mensal; a Cloudflare não expõe custo diário.
+        <b>Magalu Cloud</b>: API de consumo (custo efetivo, em reais).
+        Valores em dólar convertidos pela PTAX de venda do dia (BCB). Dias em UTC; o último dia é parcial.
+      </p>
+      <p>Cada linha de custo é atribuída a um uso por <a href="https://github.com/danlessa/gastos-nuvem/blob/main/mapping.toml">mapping.toml</a> · <a href="https://github.com/danlessa/gastos-nuvem">código</a></p>
+    </footer>
+  </main>
+  <div id="tip" class="tip" role="tooltip" hidden></div>
+  <script src="app.js"></script>
+</body>
+</html>

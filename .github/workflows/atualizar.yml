@@ -1,0 +1,83 @@
+name: atualizar
+
+# Todo dia: coleta os custos (GCP, Cloudflare R2, Magalu), versiona o histórico
+# bruto em data/raw/ e publica site/ no GitHub Pages (abiru.to/gastos-nuvem).
+# Em push só reconstrói o site a partir do histórico já versionado.
+#
+# Credenciais (configuradas uma vez por scripts/setup-ci.sh):
+#   vars.GCP_WORKLOAD_IDENTITY_PROVIDER, vars.GCP_SA  → BigQuery (billing export), sem chave
+#   secrets.CLOUDFLARE_API_TOKEN, vars.CLOUDFLARE_ACCOUNT_ID → GraphQL do R2
+#   secrets.MGC_API_KEY → API de consumo da Magalu
+# Provedor sem credencial é pulado (o painel avisa) e mantém o histórico.
+on:
+  schedule:
+    - cron: "17 9 * * *" # 06:17 em São Paulo
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      since:
+        description: "Início da janela (AAAA-MM-DD); vazio = 1º dia do mês anterior"
+        required: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - id: gcp
+        if: github.event_name != 'push' && vars.GCP_WORKLOAD_IDENTITY_PROVIDER != ''
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ vars.GCP_SA }}
+
+      - if: steps.gcp.outcome == 'success'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: coletar
+        if: github.event_name != 'push'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          MGC_API_KEY: ${{ secrets.MGC_API_KEY }}
+          SINCE: ${{ inputs.since }}
+        run: python collect.py ${SINCE:+--since "$SINCE"}
+
+      - name: construir
+        if: github.event_name == 'push'
+        run: python collect.py --build-only
+
+      - name: versionar histórico
+        if: github.event_name != 'push'
+        run: |
+          git add data/raw
+          if git diff --cached --quiet; then echo "sem mudanças"; exit 0; fi
+          git -c user.name="github-actions[bot]" \
+              -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "dados: $(date -u +%F)"
+          git push
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

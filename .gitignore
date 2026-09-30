@@ -1,0 +1,6 @@
+# gerado por collect.py no CI
+site/data/
+__pycache__/
+
+# credenciais locais
+.env

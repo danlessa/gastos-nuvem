@@ -1,0 +1,184 @@
+# Mapeia cada linha de custo bruta para um "uso" (em geral, um repo).
+#
+# Cada regra casa um regex (re.search) contra a chave
+#     provedor|projeto|serviço|recurso
+# por exemplo
+#     gcp|pedal-hidrografico|Cloud Storage|buckets/telhas
+#     r2|cloudflare|R2 armazenamento|mtpi-fabdem
+#     magalu|br-se1|Virtual Machine|workbox
+# A PRIMEIRA regra que casar vence. O mapeamento é aplicado no build, sobre o
+# histórico bruto de data/raw/, então mudar uma regra reclassifica o passado.
+
+[scopes]
+pedalhidro = "Pedal Hidrográfico"
+danlessa = "danlessa"
+outros = "Outros"
+
+# ── usos ─────────────────────────────────────────────────────────────────────
+[usecases.amora]
+scope = "pedalhidro"
+label = "amora"
+repo = "pedalhidro/amora"
+desc = "mapa dos passeios (Cloud Run phidro) + estado + telhas"
+
+[usecases.fabdem]
+scope = "pedalhidro"
+label = "fabdem (R2)"
+repo = "pedalhidro/amora"
+desc = "COGs FABDEM em fabdem.pedalhidrografi.co, lidos por simujaules/cameratopo"
+
+[usecases.simujaules]
+scope = "pedalhidro"
+label = "simujaules"
+repo = "pedalhidro/simujaules"
+desc = "site estático + orquestrador + VM de cálculo simu-compute"
+
+[usecases.cameratopo]
+scope = "pedalhidro"
+label = "cameratopo"
+repo = "pedalhidro/cameratopo"
+desc = "servidor de telhas de relevo (Cloud Run)"
+
+[usecases.sabia]
+scope = "pedalhidro"
+label = "sabiá"
+repo = "pedalhidro/sabia"
+desc = "compositor de anúncios do Instagram (ph-composer + tokens IG)"
+
+[usecases.pedalbot]
+scope = "pedalhidro"
+label = "pedalbot"
+repo = "pedalhidro/pedalbot"
+desc = "bot de WhatsApp (ph-bot-webhook/worker + whapi)"
+
+[usecases.levabici]
+scope = "pedalhidro"
+label = "levabici"
+repo = "pedalhidro/levabici"
+
+[usecases.feira]
+scope = "pedalhidro"
+label = "feira"
+repo = "pedalhidro/feira"
+
+[usecases.datahidro]
+scope = "pedalhidro"
+label = "datahidro"
+repo = "pedalhidro/datahidro"
+
+[usecases.ph-infra]
+scope = "pedalhidro"
+label = "infra compartilhada"
+desc = "Artifact Registry, fontes do Cloud Run/Build e afins no pedal-hidrografico"
+
+[usecases.ph-outros]
+scope = "pedalhidro"
+label = "pedal-hidrografico (outros)"
+desc = "custos do projeto GCP sem recurso identificado"
+
+[usecases.mtpi]
+scope = "danlessa"
+label = "mtpi"
+repo = "danlessa/mtpi"
+desc = "bucket mdt-br (GCP japucoisas) + mtpi-fabdem (R2)"
+
+[usecases.magalu-workbox]
+scope = "danlessa"
+label = "magalu-workbox"
+repo = "danlessa/magalu-workbox"
+desc = "VPS de trabalho na Magalu Cloud"
+
+[usecases.danlessa-outros]
+scope = "danlessa"
+label = "danlessa (outros)"
+desc = "projetos GCP danlessa/japucoisas sem recurso identificado"
+
+[usecases.ecotono]
+scope = "outros"
+label = "ecotono"
+desc = "projeto GCP ecotono (repos em ecotonoxyz/)"
+
+[usecases.contas]
+scope = "outros"
+label = "nível de conta"
+desc = "ajustes de fatura do GCP e operações R2 sem bucket (ListBuckets…)"
+
+[usecases.nao-mapeado]
+scope = "outros"
+label = "não mapeado"
+desc = "nenhuma regra casou — acrescente uma em mapping.toml"
+
+# ── regras (ordem importa) ───────────────────────────────────────────────────
+# pedal-hidrografico
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services/phidro|buckets/phidro-state|buckets/telhas)$'
+usecase = "amora"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services/simu-|secrets/simu-|buckets/simujaules|disks?/|instances/|snapshots?/)'
+usecase = "simujaules"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|Compute Engine\|'
+usecase = "simujaules"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|services/cameratopo$'
+usecase = "cameratopo"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services/ph-composer|secrets/(ig-|sabia-|mastodon-)|buckets/.*sabia|buckets/ph-composer)'
+usecase = "sabia"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services/ph-bot-|secrets/(whapi-|telegram-))'
+usecase = "pedalbot"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services|buckets)/levabici'
+usecase = "levabici"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services/feira|buckets/feira|secrets/feira-)'
+usecase = "feira"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|(services|buckets)/datahidro'
+usecase = "datahidro"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|(Artifact Registry|Cloud Build|Container Registry.*)\|'
+usecase = "ph-infra"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|.*\|buckets/(run-sources-|.*_cloudbuild|artifacts\.)'
+usecase = "ph-infra"
+[[rules]]
+match = '^gcp\|pedal-hidrografico\|'
+usecase = "ph-outros"
+
+# danlessa
+[[rules]]
+match = '^gcp\|japucoisas\|.*\|buckets/mdt-br$'
+usecase = "mtpi"
+[[rules]]
+match = '^gcp\|(danlessa|japucoisas)\|'
+usecase = "danlessa-outros"
+
+# outros projetos GCP
+[[rules]]
+match = '^gcp\|ecotono\|'
+usecase = "ecotono"
+
+# Cloudflare R2 (recurso = bucket)
+[[rules]]
+match = '^r2\|.*\|fabdem$'
+usecase = "fabdem"
+[[rules]]
+match = '^r2\|.*\|mtpi-'
+usecase = "mtpi"
+
+# Magalu Cloud — hoje a conta só tem o workbox (VM + volume + IP), então tudo
+# vai pra ele; separe aqui se aparecerem outros recursos.
+[[rules]]
+match = '^magalu\|'
+usecase = "magalu-workbox"
+
+# linhas sem projeto/bucket
+[[rules]]
+match = '^(gcp\|\||r2\|.*\|$)'
+usecase = "contas"
+
+[[rules]]
+match = '.'
+usecase = "nao-mapeado"
