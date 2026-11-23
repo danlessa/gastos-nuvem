@@ -74,6 +74,7 @@ R2_SERVICE = {"storage": "R2 armazenamento", "A": "R2 operações classe A", "B"
 
 # ── Magalu ───────────────────────────────────────────────────────────────────
 MGC_URL = "https://api.magalu.cloud/consumption/usage"
+MGC_MAX_SPAN_DAYS = 30  # a API aceita no máximo 31 dias entre start_date e end_date
 
 # ── PTAX (BRL por USD, cotação de venda) ─────────────────────────────────────
 PTAX_URL = (
@@ -330,31 +331,40 @@ def collect_magalu(start: date, end: date) -> list:
         raise RuntimeError("sem MGC_API_KEY (chave com a aplicação tally-consumption-api)")
     agg: dict = defaultdict(float)
     cur_of: dict = {}
-    offset = 0
-    while True:
-        q = urllib.parse.urlencode({
-            "start_date": start.isoformat(), "end_date": end.isoformat(),
-            "limit": 1000, "offset": offset, "order": "asc",
-        })
-        res = http_json(f"{MGC_URL}?{q}", headers={"x-api-key": key, "Accept": "application/json"})
-        results = res.get("results") or []
-        for r in results:
-            d = (r.get("ChargePeriodStart") or "")[:10]
-            if not d:
-                continue
-            cost = r.get("EffectiveCost") or r.get("BilledCost") or "0"
-            k = (
-                d,
-                r.get("RegionName") or r.get("RegionId") or "",
-                r.get("ServiceName") or r.get("ServiceCategory") or "",
-                r.get("ResourceName") or r.get("ResourceId") or r.get("SkuId") or "",
-            )
-            agg[k] += float(cost)
-            cur_of[k] = r.get("BillingCurrency") or "BRL"
-        total = ((res.get("meta") or {}).get("page") or {}).get("total", 0)
-        offset += len(results)
-        if not results or offset >= total:
-            break
+    # A API recusa (HTTP 422) janelas com mais de 31 dias entre start_date e
+    # end_date, e a janela padrão (1º do mês anterior → hoje) passa disso quase
+    # o mês inteiro. Então consultamos em pedaços; cada dia pertence a um único
+    # pedaço (filtro por data abaixo), para não somar em dobro nas bordas.
+    cs = start
+    while cs <= end:
+        ce = min(cs + timedelta(days=MGC_MAX_SPAN_DAYS), end)
+        lo, hi = cs.isoformat(), ce.isoformat()
+        offset = 0
+        while True:
+            q = urllib.parse.urlencode({
+                "start_date": lo, "end_date": hi,
+                "limit": 1000, "offset": offset, "order": "asc",
+            })
+            res = http_json(f"{MGC_URL}?{q}", headers={"x-api-key": key, "Accept": "application/json"})
+            results = res.get("results") or []
+            for r in results:
+                d = (r.get("ChargePeriodStart") or "")[:10]
+                if not (lo <= d <= hi):
+                    continue
+                cost = r.get("EffectiveCost") or r.get("BilledCost") or "0"
+                k = (
+                    d,
+                    r.get("RegionName") or r.get("RegionId") or "",
+                    r.get("ServiceName") or r.get("ServiceCategory") or "",
+                    r.get("ResourceName") or r.get("ResourceId") or r.get("SkuId") or "",
+                )
+                agg[k] += float(cost)
+                cur_of[k] = r.get("BillingCurrency") or "BRL"
+            total = ((res.get("meta") or {}).get("page") or {}).get("total", 0)
+            offset += len(results)
+            if not results or offset >= total:
+                break
+        cs = ce + timedelta(days=1)
     return [[*k, round(v, 6), cur_of[k]] for k, v in agg.items() if abs(v) >= 1e-6]
 
 
