@@ -1,4 +1,4 @@
-{"updated_at": "2026-11-01T16:07:37+00:00", "covered_from": "2026-06-01", "first": "2026-09-11", "last": "2026-11-01", "rows": [
+{"updated_at": "2026-11-23T19:58:17+00:00", "covered_from": "2026-06-01", "first": "2026-09-11", "last": "2026-11-23", "rows": [
 ["2026-09-11", "br-se1", "Virtual Machines", "workbox", 1.942542, "BRL"],
 ["2026-09-12", "br-se1", "Virtual Machines", "workbox", 0.043456, "BRL"],
 ["2026-09-13", "br-se1", "Virtual Machines", "workbox", 3.258463, "BRL"],
@@ -44,5 +44,26 @@
 ["2026-10-29", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
 ["2026-10-30", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
 ["2026-10-31", "br-se1", "Virtual Machines", "workbox", 10.712221, "BRL"],
-["2026-11-01", "br-se1", "Virtual Machines", "workbox", 5.588877, "BRL"]
+["2026-11-01", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-02", "br-se1", "Virtual Machines", "workbox", 5.957717, "BRL"],
+["2026-11-04", "br-se1", "Virtual Machines", "workbox", 3.647802, "BRL"],
+["2026-11-05", "br-se1", "Virtual Machines", "workbox", 4.234386, "BRL"],
+["2026-11-06", "br-se1", "Virtual Machines", "workbox", 11.072761, "BRL"],
+["2026-11-07", "br-se1", "Virtual Machines", "workbox", 9.547656, "BRL"],
+["2026-11-08", "br-se1", "Virtual Machines", "workbox", 11.073075, "BRL"],
+["2026-11-09", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-10", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-11", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-12", "br-se1", "Virtual Machines", "workbox", 11.122318, "BRL"],
+["2026-11-13", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-14", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-15", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-16", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-17", "br-se1", "Virtual Machines", "workbox", 11.121485, "BRL"],
+["2026-11-18", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-19", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-20", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-21", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-22", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
+["2026-11-23", "br-se1", "Virtual Machines", "workbox", 7.240232, "BRL"]
 ]}
