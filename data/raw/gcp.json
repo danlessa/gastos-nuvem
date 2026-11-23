@@ -1,4 +1,4 @@
-{"updated_at": "2026-11-23T19:57:57+00:00", "first": "2026-06-01", "last": "2026-11-23", "covered_from": "2026-06-01", "rows": [
+{"updated_at": "2026-11-23T21:31:42+00:00", "first": "2026-06-01", "last": "2026-11-23", "covered_from": "2026-06-01", "rows": [
 ["2026-06-01", "", "Invoice", "", 0.003214, "USD"],
 ["2026-06-01", "pedal-hidrografico", "Cloud Storage", "buckets/pedal-hidrografico_cloudbuild", 0.000108, "USD"],
 ["2026-06-02", "danlessa", "Cloud Storage", "buckets/cliometrics", 7e-05, "USD"],
