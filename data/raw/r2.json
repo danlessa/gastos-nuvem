@@ -1,4 +1,4 @@
-{"updated_at": "2026-11-25T19:25:30+00:00", "first": "2026-08-16", "last": "2026-11-25", "covered_from": "2026-07-03", "rows": [
+{"updated_at": "2026-11-26T19:07:58+00:00", "first": "2026-08-16", "last": "2026-11-26", "covered_from": "2026-07-03", "rows": [
 ["2026-08-16", "cloudflare", "R2 armazenamento", "fabdem", 0.03242, "USD"],
 ["2026-08-17", "cloudflare", "R2 armazenamento", "fabdem", 0.045605, "USD"],
 ["2026-08-18", "cloudflare", "R2 armazenamento", "fabdem", 0.045605, "USD"],
@@ -173,5 +173,8 @@
 ["2026-11-24", "cloudflare", "R2 armazenamento", "telhas", 0.015652, "USD"],
 ["2026-11-25", "cloudflare", "R2 armazenamento", "fabdem", 0.349727, "USD"],
 ["2026-11-25", "cloudflare", "R2 armazenamento", "mtpi-fabdem", 0.092672, "USD"],
-["2026-11-25", "cloudflare", "R2 armazenamento", "telhas", 0.015652, "USD"]
+["2026-11-25", "cloudflare", "R2 armazenamento", "telhas", 0.015652, "USD"],
+["2026-11-26", "cloudflare", "R2 armazenamento", "fabdem", 0.349727, "USD"],
+["2026-11-26", "cloudflare", "R2 armazenamento", "mtpi-fabdem", 0.092672, "USD"],
+["2026-11-26", "cloudflare", "R2 armazenamento", "telhas", 0.015652, "USD"]
 ]}

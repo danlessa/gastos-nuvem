@@ -1,4 +1,4 @@
-{"updated_at": "2026-11-25T19:25:48+00:00", "covered_from": "2026-06-01", "first": "2026-09-11", "last": "2026-11-25", "rows": [
+{"updated_at": "2026-11-26T19:08:16+00:00", "covered_from": "2026-06-01", "first": "2026-09-11", "last": "2026-11-25", "rows": [
 ["2026-09-11", "br-se1", "Virtual Machines", "workbox", 1.942542, "BRL"],
 ["2026-09-12", "br-se1", "Virtual Machines", "workbox", 0.043456, "BRL"],
 ["2026-09-13", "br-se1", "Virtual Machines", "workbox", 3.258463, "BRL"],
@@ -67,5 +67,5 @@
 ["2026-11-22", "br-se1", "Virtual Machines", "workbox", 11.177753, "BRL"],
 ["2026-11-23", "br-se1", "Virtual Machines", "workbox", 10.96615, "BRL"],
 ["2026-11-24", "br-se1", "Virtual Machines", "workbox", 10.47727, "BRL"],
-["2026-11-25", "br-se1", "Virtual Machines", "workbox", 2.038839, "BRL"]
+["2026-11-25", "br-se1", "Virtual Machines", "workbox", 2.424928, "BRL"]
 ]}
